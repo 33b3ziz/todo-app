@@ -7,12 +7,13 @@ const props = defineProps<{
 
 const emits = defineEmits<{
   toggleDone: [id: string];
+  deleteTask: [id: string];
 }>();
 </script>
 
 <template>
-  <div class="task-list">
-    <article v-for="task in props.tasks" :key="task.id">
+  <TransitionGroup name="task-list" tag="div" class="task-list">
+    <article v-for="task in props.tasks" :key="task.id" class="task">
       <label>
         <input
           type="checkbox"
@@ -23,8 +24,11 @@ const emits = defineEmits<{
           {{ task.title }}
         </span>
       </label>
+      <button @click="emits('deleteTask', task.id)" class="outline">
+        Delete
+      </button>
     </article>
-  </div>
+  </TransitionGroup>
 </template>
 
 <style>
@@ -34,5 +38,22 @@ const emits = defineEmits<{
 
 .done {
   text-decoration: line-through;
+}
+
+.task {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-list-enter-active,
+.task-list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.task-list-enter-from,
+.task-list-leave-to {
+  opacity: 0;
+  transform: translateX(300px);
 }
 </style>
